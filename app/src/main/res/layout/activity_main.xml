@@ -16,6 +16,7 @@
         app:z_toolbar_titleBarColor="@color/colorPrimary"
         app:z_toolbar_leftType="imageButton"
         app:z_toolbar_centerText="@string/app_name"
+        app:z_toolbar_centerSubText="demo"
         app:z_toolbar_rightType="textView"
         app:z_toolbar_rightText="test"
         />
@@ -54,6 +55,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:z_toolbar_titleBarColor="#ffffff"
+        android:layout_marginTop="10dp"
+        />
+
+    <com.zpj.widget.toolbar.ZSearchBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:z_toolbar_titleBarColor="#cccccc"
+        android:layout_marginTop="10dp"
+        />
+
+    <com.zpj.widget.toolbar.ZToolBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:z_toolbar_titleBarColor="#cccccc"
+        app:z_toolbar_leftType="imageButton"
+        app:z_toolbar_centerText="@string/app_name"
         android:layout_marginTop="10dp"
         />
 

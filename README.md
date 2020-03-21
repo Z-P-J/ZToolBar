@@ -1,15 +1,18 @@
 # ZToolBar
  A custom ToolBar for Android.
 
+## ScreenShot
+![截图](/img/img0.jpg)
+
 ## Usage
 
 Gradle
 
-```java
+```gradle
 implementation 'com.zpj.widget:ZToolBar:1.0.0'
 ```
 
-ToolBar
+ToolBar的使用
 
 ```xml
 <com.zpj.widget.toolbar.ZToolBar
@@ -25,7 +28,7 @@ ToolBar
         />
 ```
 
-SearchBar
+SearchBar的使用
 
 ```xml
 <com.zpj.widget.toolbar.ZSearchBar
