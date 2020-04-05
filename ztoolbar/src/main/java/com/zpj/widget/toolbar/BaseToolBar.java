@@ -6,7 +6,11 @@ import android.content.ContextWrapper;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Shader;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.util.AttributeSet;
@@ -23,19 +27,24 @@ import com.zpj.utils.StatusBarUtils;
 public abstract class BaseToolBar extends RelativeLayout implements ViewStub.OnInflateListener {
 
     protected boolean fillStatusBar;                      // 是否撑起状态栏, true时,标题栏浸入状态栏
+    protected Drawable background;
     protected int titleBarColor;                          // 标题栏背景颜色
     protected int statusBarColor;                         // 状态栏颜色
     protected int statusBarMode;                          // 状态栏模式
     protected int statusBarHeight = 0;                    // 标题栏高度
 
     protected int titleBarHeight;                         // 标题栏高度
+    protected int toolbarPadding;
 
     protected boolean showBottomLine;                     // 是否显示底部分割线
     protected int bottomLineColor;                        // 分割线颜色
     protected float bottomShadowHeight;                   // 底部阴影高度
+    protected int bottomShadowStartColor;                   // 底部阴影起始颜色
+    protected int bottomShadowEndColor;                   // 底部阴影终止颜色
 
     protected int bottomHeight;
 
+    protected RelativeLayout toolbarContainer;
     protected ViewStub vsLeftContainer;
     protected ViewStub vsMiddleContainer;
     protected ViewStub vsRightContainer;
@@ -46,9 +55,10 @@ public abstract class BaseToolBar extends RelativeLayout implements ViewStub.OnI
 
     protected View viewStatusBarFill;                     // 状态栏填充视图
     private View viewBottomLine;                        // 分隔线视图
-    private View viewBottomShadow;                      // 底部阴影
+    private GradientView viewBottomShadow;                      // 底部阴影
 
     protected boolean isLightStyle;
+    protected boolean forceStyle;
 
     public BaseToolBar(Context context) {
         this(context, null);
@@ -66,7 +76,15 @@ public abstract class BaseToolBar extends RelativeLayout implements ViewStub.OnI
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         setLayoutParams(params);
 
-        setBackgroundColor(titleBarColor);
+//        setBackgroundColor(titleBarColor);
+        if (background == null) {
+            background = new ColorDrawable(titleBarColor);
+        }
+        setBackground(background);
+//        toolbarContainer.setBackgroundColor(titleBarColor);
+
+//        toolbarContainer.setBackground(background);
+//        toolbarContainer.setPadding(toolbarPadding, toolbarPadding, toolbarPadding, toolbarPadding);
 
         if (fillStatusBar) {
             transparentStatusBar(context);
@@ -82,10 +100,13 @@ public abstract class BaseToolBar extends RelativeLayout implements ViewStub.OnI
             LayoutParams bottomLineParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, bottomHeight);
 //            bottomLineParams.addRule(ALIGN_PARENT_BOTTOM);
             addView(viewBottomLine, bottomLineParams);
-        } else if (bottomShadowHeight != 0) {
-            viewBottomShadow = new View(context);
+        } else if (bottomShadowHeight > 0) {
+//            viewBottomShadow = new View(context);
+            viewBottomShadow = new GradientView(context);
+            viewBottomShadow.setStartColor(bottomShadowStartColor);
+            viewBottomShadow.setEndColor(bottomShadowEndColor);
             viewBottomShadow.setId(generateViewId());
-            viewBottomShadow.setBackgroundResource(R.drawable.comm_titlebar_bottom_shadow);
+//            viewBottomShadow.setBackgroundResource(R.drawable.comm_titlebar_bottom_shadow);
             bottomHeight = ScreenUtils.dp2pxInt(context, bottomShadowHeight);
             LayoutParams bottomShadowParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, bottomHeight);
 //            bottomShadowParams.addRule(ALIGN_PARENT_BOTTOM);
@@ -109,29 +130,44 @@ public abstract class BaseToolBar extends RelativeLayout implements ViewStub.OnI
             }
         }
 
-        int id = NO_ID;
-        if (inflatedLeft != null) {
-            id = getInflatedId(vsLeftContainer, inflatedLeft);
-        } else if (inflatedRight != null) {
-            id = getInflatedId(vsRightContainer, inflatedRight);
-        } else if (inflatedMiddle != null) {
-            id = getInflatedId(vsMiddleContainer, inflatedMiddle);
-        } else if (viewStatusBarFill != null) {
-            id = viewStatusBarFill.getId();
+        if (viewStatusBarFill != null) {
+            LayoutParams layoutParams = (LayoutParams) toolbarContainer.getLayoutParams();
+            layoutParams.addRule(BELOW, viewStatusBarFill.getId());
         }
-        if (id != NO_ID) {
-            if (viewBottomLine != null) {
-                LayoutParams layoutParams = (LayoutParams) viewBottomLine.getLayoutParams();
-                layoutParams.addRule(BELOW, id);
-            } else if (viewBottomShadow != null) {
-                LayoutParams layoutParams = (LayoutParams) viewBottomShadow.getLayoutParams();
-                layoutParams.addRule(BELOW, id);
-            }
+
+
+        if (viewBottomLine != null) {
+            LayoutParams layoutParams = (LayoutParams) viewBottomLine.getLayoutParams();
+            layoutParams.addRule(BELOW, R.id.toolbar_container);
+        } else if (viewBottomShadow != null) {
+            LayoutParams layoutParams = (LayoutParams) viewBottomShadow.getLayoutParams();
+            layoutParams.addRule(BELOW, R.id.toolbar_container);
         }
+
+//        int id = NO_ID;
+//        if (inflatedLeft != null) {
+//            id = getInflatedId(vsLeftContainer, inflatedLeft);
+//        } else if (inflatedRight != null) {
+//            id = getInflatedId(vsRightContainer, inflatedRight);
+//        } else if (inflatedMiddle != null) {
+//            id = getInflatedId(vsMiddleContainer, inflatedMiddle);
+//        } else if (viewStatusBarFill != null) {
+//            id = viewStatusBarFill.getId();
+//        }
+//        if (id != NO_ID) {
+//            if (viewBottomLine != null) {
+//                LayoutParams layoutParams = (LayoutParams) viewBottomLine.getLayoutParams();
+//                layoutParams.addRule(BELOW, id);
+//            } else if (viewBottomShadow != null) {
+//                LayoutParams layoutParams = (LayoutParams) viewBottomShadow.getLayoutParams();
+//                layoutParams.addRule(BELOW, id);
+//            }
+//        }
     }
 
     private void initView(Context context) {
         LayoutInflater.from(context).inflate(R.layout.z_toolbar, this, true);
+		toolbarContainer = findViewById(R.id.toolbar_container);
         vsLeftContainer = findViewById(R.id.vs_left_container);
         vsMiddleContainer = findViewById(R.id.vs_middle_container);
         vsRightContainer = findViewById(R.id.vs_right_container);
@@ -145,17 +181,28 @@ public abstract class BaseToolBar extends RelativeLayout implements ViewStub.OnI
 
         fillStatusBar = array.getBoolean(R.styleable.BaseToolBar_z_toolbar_fillStatusBar, false);
         titleBarColor = array.getColor(R.styleable.BaseToolBar_z_toolbar_titleBarColor, Color.WHITE);
-        isLightStyle = ColorUtils.isDarkColor(titleBarColor);
+		background = array.getDrawable(R.styleable.BaseToolBar_z_toolbar_background);
+        toolbarPadding = (int) array.getDimension(R.styleable.BaseToolBar_z_toolbar_padding, 0);
+        if (array.hasValue(R.styleable.BaseToolBar_z_toolbar_isLightStyle)) {
+            isLightStyle = array.getBoolean(R.styleable.BaseToolBar_z_toolbar_isLightStyle, false);
+            forceStyle = true;
+        } else {
+            forceStyle = false;
+            isLightStyle = ColorUtils.isDarkenColor(titleBarColor);
+        }
+//        isLightStyle = !isLightStyle && ColorUtils.isDarkenColor(titleBarColor);
         titleBarHeight = (int) array.getDimension(R.styleable.BaseToolBar_z_toolbar_titleBarHeight, ScreenUtils.dp2pxInt(context, 56));
         statusBarColor = array.getColor(R.styleable.BaseToolBar_z_toolbar_statusBarColor, Color.WHITE);
         statusBarMode = array.getInt(R.styleable.BaseToolBar_z_toolbar_statusBarMode, -1);
         if (statusBarMode == -1) {
-            statusBarMode = ColorUtils.isDarkColor(statusBarColor) ? 0 : 1;
+            statusBarMode = ColorUtils.isDarkenColor(statusBarColor) ? 0 : 1;
         }
 
         showBottomLine = array.getBoolean(R.styleable.BaseToolBar_z_toolbar_showBottomLine, false);
         bottomLineColor = array.getColor(R.styleable.BaseToolBar_z_toolbar_bottomLineColor, Color.parseColor("#f8f8f8"));
         bottomShadowHeight = array.getDimension(R.styleable.BaseToolBar_z_toolbar_bottomShadowHeight, 0);
+        bottomShadowStartColor = array.getColor(R.styleable.BaseToolBar_z_toolbar_bottomShadowStartColor, Color.GRAY);
+        bottomShadowEndColor = array.getColor(R.styleable.BaseToolBar_z_toolbar_bottomShadowEndColor, Color.TRANSPARENT);
         array.recycle();
     }
 
@@ -172,7 +219,7 @@ public abstract class BaseToolBar extends RelativeLayout implements ViewStub.OnI
         if (viewStatusBarFill != null) {
             params.addRule(BELOW, viewStatusBarFill.getId());
         }
-        params.height = titleBarHeight;
+        params.height = titleBarHeight - 2 * toolbarPadding;
 //        inflated.setBackgroundColor(titleBarColor);
 
         if (stub == vsLeftContainer) {
@@ -259,14 +306,35 @@ public abstract class BaseToolBar extends RelativeLayout implements ViewStub.OnI
         return null;
     }
 
+//    @Deprecated
+//    @Override
+//    public void setBackground(Drawable background) {
+//        super.setBackground(background);
+//    }
+//
+//    @Deprecated
+//    @Override
+//    public void setBackgroundColor(int color) {
+//        super.setBackgroundColor(color);
+//    }
+//
+//    @Deprecated
+//    @Override
+//    public void setBackgroundResource(int resid) {
+//        super.setBackgroundResource(resid);
+//    }
+//
+//    @Override
+//    public void setBackgroundDrawable(Drawable background) {
+//        super.setBackgroundDrawable(background);
+//    }
 
-
-
-
-
-
-
-
+    @Override
+    public void setBackground(Drawable background) {
+        this.background = background;
+        toolbarContainer.setBackground(background);
+        toolbarContainer.setPadding(toolbarPadding, toolbarPadding, toolbarPadding, toolbarPadding);
+    }
 
     @Override
     public void setBackgroundColor(int color) {
@@ -274,14 +342,39 @@ public abstract class BaseToolBar extends RelativeLayout implements ViewStub.OnI
             viewStatusBarFill.setBackgroundColor(color);
         }
         titleBarColor = color;
-        super.setBackgroundColor(color);
+        setBackground(new ColorDrawable(titleBarColor));
     }
 
     @Override
     public void setBackgroundResource(int resource) {
         setBackgroundColor(Color.TRANSPARENT);
-        super.setBackgroundResource(resource);
+        setBackground(getResources().getDrawable(resource));
     }
+
+    @Override
+    public void setBackgroundDrawable(Drawable background) {
+        super.setBackground(background);
+    }
+
+    //    public void setToolBarBackground(Drawable background) {
+//        this.background = background;
+//        toolbarContainer.setBackground(background);
+//        toolbarContainer.setPadding(toolbarPadding, toolbarPadding, toolbarPadding, toolbarPadding);
+//    }
+//
+//    public void setToolBarBackgroundColor(int color) {
+//        if (viewStatusBarFill != null) {
+//            viewStatusBarFill.setBackgroundColor(color);
+//        }
+//        titleBarColor = color;
+//        setToolBarBackground(new ColorDrawable(titleBarColor));
+//    }
+//
+//
+//    public void setToolBarBackgroundResource(int resource) {
+//        setToolBarBackgroundColor(Color.TRANSPARENT);
+//        setToolBarBackground(getResources().getDrawable(resource));
+//    }
 
     public void setStatusBarColor(int color) {
         if (viewStatusBarFill != null) {
@@ -313,6 +406,14 @@ public abstract class BaseToolBar extends RelativeLayout implements ViewStub.OnI
         }
     }
 
+    public boolean isLightStyle() {
+        return isLightStyle;
+    }
+
+    public void setLightStyle(boolean lightStyle) {
+        isLightStyle = lightStyle;
+    }
+
     protected abstract void inflateLeftContainer(ViewStub viewStub);
 
     protected abstract void inflateMiddleContainer(ViewStub viewStub);
@@ -320,7 +421,7 @@ public abstract class BaseToolBar extends RelativeLayout implements ViewStub.OnI
     protected abstract void inflateRightContainer(ViewStub viewStub);
 
     protected int getStyleColor(int defaultColor) {
-        if (ColorUtils.isDarkColor(defaultColor)) {
+        if (ColorUtils.isDarkenColor(defaultColor)) {
             return isLightStyle ? Color.WHITE : defaultColor;
         } else {
             return isLightStyle ? defaultColor : Color.BLACK;

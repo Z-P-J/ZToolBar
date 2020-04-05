@@ -203,6 +203,33 @@ public class ZToolBar extends BaseToolBar {
         }
     }
 
+    @Override
+    public void setBackgroundColor(int color) {
+        super.setBackgroundColor(color);
+        isLightStyle = forceStyle ? isLightStyle : ColorUtils.isDarkenColor(titleBarColor);
+        resetStyle();
+    }
+
+    private void resetStyle() {
+        if (inflatedLeft instanceof TintedImageButton) {
+            ((TintedImageButton) inflatedLeft).setTint(ColorStateList.valueOf(isLightStyle ? Color.WHITE : Color.BLACK));
+        } else if (inflatedLeft instanceof TextView){
+            ((TextView) inflatedLeft).setTextColor(getStyleColor(leftTextColor));
+        }
+        if (tvTitle != null) {
+            tvTitle.setTextColor(getStyleColor(centerTextColor));
+        }
+        if (tvSubTitle != null) {
+            tvSubTitle.setTextColor(getStyleColor(centerSubTextColor));
+        }
+        if (inflatedRight instanceof TintedImageButton) {
+            ((TintedImageButton) inflatedRight).setTint(ColorStateList.valueOf(isLightStyle ? Color.WHITE : Color.BLACK));
+        } else if (inflatedRight instanceof TextView){
+            ((TextView) inflatedRight).setTextColor(getStyleColor(rightTextColor));
+        }
+
+    }
+
     public TextView getLeftTextView() {
         if (leftType == TYPE_LEFT_TEXTVIEW && inflatedLeft instanceof TextView) {
             return (TextView) inflatedLeft;
@@ -215,6 +242,14 @@ public class ZToolBar extends BaseToolBar {
             return (ImageButton) inflatedLeft;
         }
         return null;
+    }
+
+    public View getLeftView() {
+        return inflatedLeft;
+    }
+
+    public View getRightView() {
+        return inflatedRight;
     }
 
     public TextView getRightTextView() {
@@ -269,6 +304,38 @@ public class ZToolBar extends BaseToolBar {
 
     public String getTitle() {
         return centerText;
+    }
+
+    public void setLeftButtonTint(int color) {
+        if (inflatedLeft instanceof TintedImageButton) {
+            ((TintedImageButton) inflatedLeft).setTint(ColorStateList.valueOf(color));
+        }
+    }
+
+    public void setRightButtonTint(int color) {
+        if (inflatedLeft instanceof TintedImageButton) {
+            ((TintedImageButton) inflatedLeft).setTint(ColorStateList.valueOf(color));
+        }
+    }
+
+    public void setCenterTextColor(int color) {
+        this.centerTextColor = color;
+        if (tvTitle != null) {
+            tvTitle.setTextColor(color);
+        }
+    }
+
+    public void setCenterSubTextColor(int color) {
+        this.centerSubTextColor = color;
+        if (tvSubTitle != null) {
+            tvSubTitle.setTextColor(color);
+        }
+    }
+
+    @Override
+    public void setLightStyle(boolean lightStyle) {
+        super.setLightStyle(lightStyle);
+        resetStyle();
     }
 
 }

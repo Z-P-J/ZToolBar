@@ -10,5 +10,5 @@
     android:gravity="center"
     android:textColor="#333333"
     android:padding="16sp"
-    android:background="?attr/actionBarItemBackground"
+    android:background="?attr/selectableItemBackground"
     />

@@ -3,13 +3,14 @@
 
 ## ScreenShot
 ![截图](/img/img0.jpg)
+![截图](/img/img1.jpg)
 
 ## Usage
 
 Gradle
 
 ```gradle
-implementation 'com.zpj.widget:ZToolBar:1.0.0'
+implementation 'com.zpj.widget:ZToolBar:1.0.3'
 ```
 
 ToolBar的使用

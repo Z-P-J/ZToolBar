@@ -10,9 +10,14 @@ public class ColorUtils {
 
     }
 
+    @Deprecated
     public static boolean isDarkColor(int color) {
         float a = getContrastForColor(color);
         return a >= CONTRAST_LIGHT_ITEM_THRESHOLD;
+    }
+
+    public static boolean isDarkenColor(int color) {
+        return android.support.v4.graphics.ColorUtils.calculateLuminance(color) <= 0.5;
     }
 
     private static float getContrastForColor(int color) {

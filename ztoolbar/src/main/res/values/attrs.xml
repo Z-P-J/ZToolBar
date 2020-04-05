@@ -15,12 +15,20 @@
         </attr>
         <!-- 标题栏高度 -->
         <attr name="z_toolbar_titleBarHeight" format="dimension" />
+        <attr name="z_toolbar_padding" format="dimension" />
         <!-- 显示标题栏分割线 -->
         <attr name="z_toolbar_showBottomLine" format="boolean" />
         <!-- 标题栏分割线颜色 -->
         <attr name="z_toolbar_bottomLineColor" format="color" />
         <!-- 底部阴影高度 showBottomLine = false时有效 -->
         <attr name="z_toolbar_bottomShadowHeight" format="dimension" />
+        <attr name="z_toolbar_bottomShadowStartColor" format="color" />
+        <attr name="z_toolbar_bottomShadowEndColor" format="color" />
+
+        <attr name="z_toolbar_background" format="reference|color" />
+
+        <attr name="z_toolbar_isLightStyle" format="boolean" />
+
     </declare-styleable>
 
     <declare-styleable name="ZToolBar">
@@ -104,6 +112,9 @@
         <attr name="z_toolbar_centerSearchEditable" format="boolean" />
         <!-- 搜索框背景 -->
         <attr name="z_toolbar_centerSearchBg" format="reference" />
+
+        <attr name="z_toolbar_showLeftImageButton" format="boolean" />
+        <attr name="z_toolbar_showRightImageButton" format="boolean" />
 
     </declare-styleable>
 
