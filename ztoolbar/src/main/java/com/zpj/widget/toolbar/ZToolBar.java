@@ -3,10 +3,13 @@ package com.zpj.widget.toolbar;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.ImageButton;
@@ -51,6 +54,7 @@ public class ZToolBar extends BaseToolBar {
     protected String centerText;                          // 中间TextView文字
     protected int centerTextColor;                        // 中间TextView字体颜色
     protected float centerTextSize;                       // 中间TextView字体大小
+    protected int centerTextGravity;
     protected boolean centerTextMarquee;                  // 中间TextView字体是否显示跑马灯效果
     protected String centerSubText;                       // 中间subTextView文字
     protected int centerSubTextColor;                     // 中间subTextView字体颜色
@@ -122,6 +126,7 @@ public class ZToolBar extends BaseToolBar {
             centerSubText = array.getString(R.styleable.ZToolBar_z_toolbar_centerSubText);
             centerSubTextColor = array.getColor(R.styleable.ZToolBar_z_toolbar_centerSubTextColor, Color.parseColor("#666666"));
             centerSubTextSize = array.getDimensionPixelSize(R.styleable.ZToolBar_z_toolbar_centerSubTextSize, ScreenUtils.dp2pxInt(context, 11));
+            centerTextGravity = array.getInt(R.styleable.ZToolBar_z_toolbar_center_text_gravity, Gravity.CENTER_VERTICAL);
         }
         array.recycle();
     }
@@ -157,6 +162,8 @@ public class ZToolBar extends BaseToolBar {
             viewStub.inflate();
             tvTitle = findViewById(R.id.tv_title);
             tvSubTitle = findViewById(R.id.tv_sub_title);
+            tvTitle.setGravity(centerTextGravity);
+            tvSubTitle.setGravity(centerTextGravity);
             tvTitle.setText(centerText);
             tvTitle.setTextColor(getStyleColor(centerTextColor));
             tvTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, centerTextSize); // TypedValue.COMPLEX_UNIT_PX,
@@ -210,6 +217,12 @@ public class ZToolBar extends BaseToolBar {
         resetStyle();
     }
 
+    @Override
+    public void setLightStyle(boolean lightStyle) {
+        super.setLightStyle(lightStyle);
+        resetStyle();
+    }
+
     private void resetStyle() {
         if (inflatedLeft instanceof TintedImageButton) {
             ((TintedImageButton) inflatedLeft).setTint(ColorStateList.valueOf(isLightStyle ? Color.WHITE : Color.BLACK));
@@ -223,62 +236,18 @@ public class ZToolBar extends BaseToolBar {
             tvSubTitle.setTextColor(getStyleColor(centerSubTextColor));
         }
         if (inflatedRight instanceof TintedImageButton) {
-            ((TintedImageButton) inflatedRight).setTint(ColorStateList.valueOf(isLightStyle ? Color.WHITE : Color.BLACK));
+            ((TintedImageButton) inflatedRight).setTint(isLightStyle ? Color.WHITE : Color.BLACK);
         } else if (inflatedRight instanceof TextView){
             ((TextView) inflatedRight).setTextColor(getStyleColor(rightTextColor));
         }
 
     }
 
-    public TextView getLeftTextView() {
-        if (leftType == TYPE_LEFT_TEXTVIEW && inflatedLeft instanceof TextView) {
-            return (TextView) inflatedLeft;
-        }
-        return null;
-    }
 
-    public ImageButton getLeftImageButton() {
-        if (leftType == TYPE_LEFT_IMAGEBUTTON && inflatedLeft instanceof ImageButton) {
-            return (ImageButton) inflatedLeft;
-        }
-        return null;
-    }
+    //--------------------------------------LeftView------------------------------------------------
 
     public View getLeftView() {
         return inflatedLeft;
-    }
-
-    public View getRightView() {
-        return inflatedRight;
-    }
-
-    public TextView getRightTextView() {
-        if (rightType == TYPE_RIGHT_TEXTVIEW  && inflatedRight instanceof TextView) {
-            return (TextView) inflatedRight;
-        }
-        return null;
-    }
-
-    public ImageButton getRightImageButton() {
-        if (rightType == TYPE_RIGHT_IMAGEBUTTON && inflatedRight instanceof ImageButton) {
-            return (ImageButton) inflatedRight;
-        }
-        return null;
-    }
-
-    public LinearLayout getCenterLayout() {
-        if (centerType == TYPE_CENTER_TEXTVIEW && inflatedMiddle instanceof LinearLayout) {
-            return (LinearLayout) inflatedMiddle;
-        }
-        return null;
-    }
-
-    public TextView getCenterTextView() {
-        return tvTitle;
-    }
-
-    public TextView getCenterSubTextView() {
-        return tvSubTitle;
     }
 
     public View getLeftCustomView() {
@@ -288,11 +257,185 @@ public class ZToolBar extends BaseToolBar {
         return null;
     }
 
+    //-------------------------------------LeftTextView--------------------------------------------
+
+    public TextView getLeftTextView() {
+        if (leftType == TYPE_LEFT_TEXTVIEW && inflatedLeft instanceof TextView) {
+            return (TextView) inflatedLeft;
+        }
+        return null;
+    }
+
+    public void setLeftText(String text) {
+        TextView left = getLeftTextView();
+        if (left != null) {
+            left.setText(text);
+        }
+    }
+
+    public void setLeftTextColor(int color) {
+        TextView left = getLeftTextView();
+        if (left != null) {
+            left.setTextColor(color);
+        }
+    }
+
+    public void setLeftTextSize(float size) {
+        TextView left = getLeftTextView();
+        if (left != null) {
+            left.setTextSize(size);
+        }
+    }
+
+    public void setLeftTextSize(int unit, float size) {
+        TextView left = getLeftTextView();
+        if (left != null) {
+            left.setTextSize(unit, size);
+        }
+    }
+    public void setLeftTextGravity(int gravity) {
+        TextView left = getLeftTextView();
+        if (left != null) {
+            left.setGravity(gravity);
+        }
+    }
+
+
+    //---------------------------------------LeftImageButton---------------------------------------
+
+    public ImageButton getLeftImageButton() {
+        if (leftType == TYPE_LEFT_IMAGEBUTTON && inflatedLeft instanceof ImageButton) {
+            return (ImageButton) inflatedLeft;
+        }
+        return null;
+    }
+
+    public void setLeftButtonTint(int color) {
+        if (inflatedLeft instanceof TintedImageButton) {
+            ((TintedImageButton) inflatedLeft).setTint(ColorStateList.valueOf(color));
+        }
+    }
+    public void setLeftButtonImage(int resId) {
+        if (inflatedLeft instanceof TintedImageButton) {
+            ((TintedImageButton) inflatedLeft).setImageResource(resId);
+        }
+    }
+
+    public void setLeftButtonImage(Drawable drawable) {
+        if (inflatedLeft instanceof TintedImageButton) {
+            ((TintedImageButton) inflatedLeft).setImageDrawable(drawable);
+        }
+    }
+
+    public void setLeftButtonImage(Bitmap bitmap) {
+        if (inflatedLeft instanceof TintedImageButton) {
+            ((TintedImageButton) inflatedLeft).setImageBitmap(bitmap);
+        }
+    }
+
+
+
+
+
+    //-----------------------------------------RightView----------------------------------------
+    public View getRightView() {
+        return inflatedRight;
+    }
+
     public View getRightCustomView() {
         if (rightType == TYPE_RIGHT_CUSTOM_VIEW) {
             return inflatedRight;
         }
         return null;
+    }
+
+    //-------------------------------------RightTextView----------------------------------------
+    public TextView getRightTextView() {
+        if (rightType == TYPE_RIGHT_TEXTVIEW  && inflatedRight instanceof TextView) {
+            return (TextView) inflatedRight;
+        }
+        return null;
+    }
+
+    public void setRightText(String text) {
+        TextView right = getRightTextView();
+        if (right != null) {
+            right.setText(text);
+        }
+    }
+
+    public void setRightTextColor(int color) {
+        TextView right = getRightTextView();
+        if (right != null) {
+            right.setTextColor(color);
+        }
+    }
+
+    public void setRightTextSize(float size) {
+        TextView right = getRightTextView();
+        if (right != null) {
+            right.setTextSize(size);
+        }
+    }
+
+    public void setRightTextSize(int unit, float size) {
+        TextView right = getRightTextView();
+        if (right != null) {
+            right.setTextSize(unit, size);
+        }
+    }
+    public void setRightTextGravity(int gravity) {
+        TextView right = getRightTextView();
+        if (right != null) {
+            right.setGravity(gravity);
+        }
+    }
+
+
+
+
+    //----------------------------------------RightImageButton-------------------------------------
+
+    public ImageButton getRightImageButton() {
+        if (rightType == TYPE_RIGHT_IMAGEBUTTON && inflatedRight instanceof ImageButton) {
+            return (ImageButton) inflatedRight;
+        }
+        return null;
+    }
+
+    public void setRightButtonTint(int color) {
+        if (inflatedRight instanceof TintedImageButton) {
+            ((TintedImageButton) inflatedRight).setTint(ColorStateList.valueOf(color));
+        }
+    }
+
+    public void setRightButtonImage(int resId) {
+        if (inflatedRight instanceof TintedImageButton) {
+            ((TintedImageButton) inflatedRight).setImageResource(resId);
+        }
+    }
+
+    public void setRightButtonImage(Drawable drawable) {
+        if (inflatedRight instanceof TintedImageButton) {
+            ((TintedImageButton) inflatedRight).setImageDrawable(drawable);
+        }
+    }
+
+    public void setRightButtonImage(Bitmap bitmap) {
+        if (inflatedRight instanceof TintedImageButton) {
+            ((TintedImageButton) inflatedRight).setImageBitmap(bitmap);
+        }
+    }
+
+
+
+    //----------------------------------------CenterView----------------------------------------
+    public View getCenterView() {
+//        if (centerType == TYPE_CENTER_TEXTVIEW && inflatedMiddle instanceof LinearLayout) {
+//            return (LinearLayout) inflatedMiddle;
+//        }
+//        return null;
+        return inflatedMiddle;
     }
 
     public View getCenterCustomView() {
@@ -302,19 +445,20 @@ public class ZToolBar extends BaseToolBar {
         return null;
     }
 
-    public String getTitle() {
-        return centerText;
+    //-------------------------------------CenterTextView---------------------------------------
+
+    public TextView getCenterTextView() {
+        return tvTitle;
     }
 
-    public void setLeftButtonTint(int color) {
-        if (inflatedLeft instanceof TintedImageButton) {
-            ((TintedImageButton) inflatedLeft).setTint(ColorStateList.valueOf(color));
-        }
+    public TextView getCenterSubTextView() {
+        return tvSubTitle;
     }
 
-    public void setRightButtonTint(int color) {
-        if (inflatedLeft instanceof TintedImageButton) {
-            ((TintedImageButton) inflatedLeft).setTint(ColorStateList.valueOf(color));
+    public void setCenterText(String text) {
+        this.centerText = text;
+        if (tvTitle != null) {
+            tvTitle.setText(text);
         }
     }
 
@@ -325,6 +469,31 @@ public class ZToolBar extends BaseToolBar {
         }
     }
 
+    public void setCenterTextGravity(int gravity) {
+        if (tvTitle != null) {
+            tvTitle.setGravity(gravity);
+        }
+    }
+
+    public void setCenterTextSize(float size) {
+        if (tvTitle != null) {
+            tvTitle.setTextSize(size);
+        }
+    }
+
+    public void setCenterTextSize(int unit, float size) {
+        if (tvTitle != null) {
+            tvTitle.setTextSize(unit, size);
+        }
+    }
+
+    public void setCenterSubText(String text) {
+        this.centerText = text;
+        if (tvSubTitle != null) {
+            tvSubTitle.setText(text);
+        }
+    }
+
     public void setCenterSubTextColor(int color) {
         this.centerSubTextColor = color;
         if (tvSubTitle != null) {
@@ -332,10 +501,29 @@ public class ZToolBar extends BaseToolBar {
         }
     }
 
-    @Override
-    public void setLightStyle(boolean lightStyle) {
-        super.setLightStyle(lightStyle);
-        resetStyle();
+    public void setCenterSubTextGravity(int gravity) {
+        if (tvSubTitle != null) {
+            tvSubTitle.setGravity(gravity);
+        }
     }
 
+    public void setCenterSubTextSize(float size) {
+        if (tvSubTitle != null) {
+            tvSubTitle.setTextSize(size);
+        }
+    }
+
+    public void setCenterSubTextSize(int unit, float size) {
+        if (tvSubTitle != null) {
+            tvSubTitle.setTextSize(unit, size);
+        }
+    }
+
+    public String getCenterText() {
+        return centerText;
+    }
+
+    public String getCenterSubText() {
+        return centerSubText;
+    }
 }

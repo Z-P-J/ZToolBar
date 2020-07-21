@@ -37,6 +37,9 @@ public class MainActivity extends AppCompatActivity {
                 test3.setLightStyle(!test3.isLightStyle());
             }
         });
+
+        final ZToolBar test4 = findViewById(R.id.test4);
+        test4.setBackgroundResource(R.drawable.shape_gradient, true);
     }
 
 }

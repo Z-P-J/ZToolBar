@@ -1,6 +1,9 @@
 package com.zpj.widget.toolbar;
 
+import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.util.TypedValue;
 
 public class ColorUtils {
 
@@ -29,6 +32,24 @@ public class ColorUtils {
         bgB = (bgB < 0.03928f) ? bgB / 12.92f : (float) Math.pow((bgB + 0.055f) / 1.055f, 2.4f);
         float bgL = 0.2126f * bgR + 0.7152f * bgG + 0.0722f * bgB;
         return Math.abs((1.05f) / (bgL + 0.05f));
+    }
+
+    public static int getColorPrimary(Context context){
+        TypedValue typedValue = new TypedValue();
+        context.getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
+        return typedValue.data;
+    }
+
+    public static int getDarkColorPrimary(Context context){
+        TypedValue typedValue = new  TypedValue();
+        context.getTheme().resolveAttribute(R.attr.colorPrimaryDark, typedValue, true);
+        return typedValue.data;
+    }
+
+    public static int getColorAccent(Context context){
+        TypedValue typedValue = new  TypedValue();
+        context.getTheme().resolveAttribute(R.attr.colorAccent, typedValue, true);
+        return typedValue.data;
     }
 
 }

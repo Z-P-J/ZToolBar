@@ -3,21 +3,26 @@ package com.zpj.widget.toolbar;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.support.v4.content.ContextCompat;
+import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewStub;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.zpj.utils.ScreenUtils;
 import com.zpj.widget.tinted.TintedImageButton;
 import com.zpj.widget.tinted.TintedImageView;
 
@@ -30,7 +35,11 @@ public class ZSearchBar extends BaseToolBar {
     protected int rightImageResource;
 
     private String defaultText;
+    private int textColor;
+    private int textSize;
+    private int textGravity;
     private String hintText;
+    private int hintTextColor;
     protected boolean showLeftImageButton = true;
     protected boolean showRightImageButton = true;
     protected boolean editable;                // 搜索框是否可输入
@@ -38,7 +47,7 @@ public class ZSearchBar extends BaseToolBar {
     protected int rightType;                  // 搜索框右边按钮类型  0: voice 1: delete
 
     private AutoCompleteTextView editor;
-    private TintedImageView ivClear;
+    private TintedImageButton ivClear;
     private TintedImageButton ibSearch;
 
     private OnSearchListener listener;
@@ -75,10 +84,14 @@ public class ZSearchBar extends BaseToolBar {
         super.initAttribute(context, attrs);
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.ZSearchBar);
         defaultText = array.getString(R.styleable.ZSearchBar_z_toolbar_content_text);
+        textSize = array.getDimensionPixelSize(R.styleable.ZSearchBar_z_toolbar_content_text_size, ScreenUtils.dp2pxInt(context, 16));
+        textColor = array.getColor(R.styleable.ZSearchBar_z_toolbar_content_text_color, Color.TRANSPARENT);
+        textGravity = array.getInt(R.styleable.ZSearchBar_z_toolbar_content_text_gravity, Gravity.CENTER_VERTICAL);
         hintText = array.getString(R.styleable.ZSearchBar_z_toolbar_hint_text);
         if (TextUtils.isEmpty(hintText)) {
             hintText = context.getResources().getString(R.string.toolbar_search_hint);
         }
+        hintTextColor = array.getColor(R.styleable.ZSearchBar_z_toolbar_hint_text_color, Color.TRANSPARENT); // Color.TRANSPARENT
         showLeftImageButton = array.getBoolean(R.styleable.ZSearchBar_z_toolbar_showLeftImageButton, true);
         showRightImageButton = array.getBoolean(R.styleable.ZSearchBar_z_toolbar_showRightImageButton, true);
         editable = array.getBoolean(R.styleable.ZSearchBar_z_toolbar_centerSearchEditable, true);
@@ -104,7 +117,7 @@ public class ZSearchBar extends BaseToolBar {
         TintedImageButton button = (TintedImageButton) viewStub.inflate();
         if (leftImageResource > 0) {
             button.setImageResource(leftImageResource);
-            button.setTint(ColorStateList.valueOf(isLightStyle ? Color.WHITE : Color.BLACK));
+            button.setTint(isLightStyle ? Color.WHITE : Color.BLACK);
         } else {
             button.setVisibility(GONE);
         }
@@ -119,9 +132,17 @@ public class ZSearchBar extends BaseToolBar {
             editor.setBackgroundResource(searchBgResource);
         }
         editor.setHint(hintText);
-        if (isLightStyle) {
-            editor.setTextColor(Color.WHITE);
-            editor.setHintTextColor(Color.parseColor("#fafafa"));
+        editor.setGravity(textGravity);
+        editor.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        if (textColor == Color.TRANSPARENT) {
+            editor.setTextColor(isLightStyle ? Color.WHITE : Color.BLACK);
+        } else {
+            editor.setTextColor(textColor);
+        }
+        if (hintTextColor == Color.TRANSPARENT) {
+            editor.setHintTextColor(Color.parseColor(isLightStyle ? "#fafafa" : "#cccccc") );
+        } else {
+            editor.setHintTextColor(hintTextColor);
         }
         initEditor();
         if (rightType == TYPE_SEARCH_RIGHT_DELETE) {
@@ -135,7 +156,8 @@ public class ZSearchBar extends BaseToolBar {
         } else if (rightType == TYPE_SEARCH_RIGHT_VOICE) {
             ivClear.setImageResource(R.drawable.ic_keyboard_voice_black_24dp);
         }
-        ivClear.setTint(ColorStateList.valueOf(isLightStyle ? Color.LTGRAY : Color.GRAY));
+//        ivClear.setTint(isLightStyle ? Color.LTGRAY : Color.GRAY);
+        ivClear.setTint(isLightStyle ? Color.WHITE : Color.BLACK);
     }
 
     @Override
@@ -147,7 +169,7 @@ public class ZSearchBar extends BaseToolBar {
         ibSearch = findViewById(R.id.ib_search);
         if (rightImageResource > 0) {
             ibSearch.setImageResource(rightImageResource);
-            ibSearch.setTint(ColorStateList.valueOf(isLightStyle ? Color.WHITE : Color.BLACK));
+            ibSearch.setTint(isLightStyle ? Color.WHITE : Color.BLACK);
         } else {
             ibSearch.setVisibility(GONE);
         }
@@ -223,7 +245,7 @@ public class ZSearchBar extends BaseToolBar {
             editor.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // ZSearchbar.this.performClick();
+                     ZSearchBar.this.performClick();
                 }
             });
         }
@@ -232,6 +254,45 @@ public class ZSearchBar extends BaseToolBar {
     public void setText(CharSequence text) {
         if (editor != null) {
             editor.setText(text);
+        }
+    }
+
+    public void setText(int resId) {
+        if (editor != null) {
+            editor.setText(resId);
+        }
+    }
+
+    public void setTextSize(float size) {
+        if (editor != null) {
+            editor.setTextSize(size);
+        }
+    }
+
+    public void setTextSize(int unit, float size) {
+        if (editor != null) {
+            editor.setTextSize(unit, size);
+        }
+    }
+
+    public void setHintText(CharSequence text) {
+        if (editor != null) {
+            editor.setHint(text);
+            this.hintText = editor.getHint().toString();
+        }
+    }
+
+    public void setHintText(int resId) {
+        if (editor != null) {
+            editor.setHint(resId);
+            this.hintText = editor.getHint().toString();
+        }
+    }
+
+    public void setHintTextColor(int color) {
+        if (editor != null) {
+            this.hintTextColor = color;
+            editor.setHintTextColor(color);
         }
     }
 
@@ -255,10 +316,6 @@ public class ZSearchBar extends BaseToolBar {
         }
     }
 
-    public ImageButton getLeftImageButton() {
-        return (ImageButton) inflatedLeft;
-    }
-
     public AutoCompleteTextView getEditor() {
         return editor;
     }
@@ -266,6 +323,65 @@ public class ZSearchBar extends BaseToolBar {
     public void setEditable(boolean editable) {
         this.editable = editable;
         initEditor();
+    }
+
+    public ImageButton getClearButton() {
+        return ivClear;
+    }
+
+    public void setClearButtonTint(int color) {
+        ivClear.setTint(ColorStateList.valueOf(color));
+    }
+
+    public void setClearButtonImage(int resId) {
+        ivClear.setImageResource(resId);
+    }
+
+    public void setClearButtonImage(Drawable drawable) {
+        ivClear.setImageDrawable(drawable);
+    }
+
+    public void setClearButtonImage(Bitmap bitmap) {
+        ivClear.setImageBitmap(bitmap);
+    }
+
+    public ImageButton getLeftImageButton() {
+        return (ImageButton) inflatedLeft;
+    }
+
+    public void setLeftButtonTint(int color) {
+        ((TintedImageButton) inflatedLeft).setTint(ColorStateList.valueOf(color));
+    }
+    public void setLeftButtonImage(int resId) {
+        ((TintedImageButton) inflatedLeft).setImageResource(resId);
+    }
+
+    public void setLeftButtonImage(Drawable drawable) {
+        ((TintedImageButton) inflatedLeft).setImageDrawable(drawable);
+    }
+
+    public void setLeftButtonImage(Bitmap bitmap) {
+        ((TintedImageButton) inflatedLeft).setImageBitmap(bitmap);
+    }
+
+    public ImageButton getRightImageButton() {
+        return ibSearch;
+    }
+
+    public void setRightButtonTint(int color) {
+        ibSearch.setTint(ColorStateList.valueOf(color));
+    }
+
+    public void setRightButtonImage(int resId) {
+        ibSearch.setImageResource(resId);
+    }
+
+    public void setRightButtonImage(Drawable drawable) {
+        ibSearch.setImageDrawable(drawable);
+    }
+
+    public void setRightButtonImage(Bitmap bitmap) {
+        ibSearch.setImageBitmap(bitmap);
     }
 
     public interface OnSearchListener {
