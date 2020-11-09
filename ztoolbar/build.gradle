@@ -23,7 +23,7 @@ android {
         artifactId = 'ZToolBar'
         userOrg = 'z-p-j'
         groupId = 'com.zpj.widget'
-        publishVersion = '1.0.5'
+        publishVersion = '1.0.6'
         desc = 'A custom ToolBar for Android.'
         website = 'https://github.com/Z-P-J/ZToolBar'
         licences = ['Apache-2.0']
@@ -35,5 +35,5 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.zpj.widget:TintedImageView:1.0.0'
-    implementation 'com.zpj.utils:ZUtils:1.0.2'
+    implementation 'com.zpj.utils:ZUtils:1.0.3'
 }

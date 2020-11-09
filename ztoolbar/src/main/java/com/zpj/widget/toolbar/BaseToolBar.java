@@ -3,16 +3,10 @@ package com.zpj.widget.toolbar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.graphics.LinearGradient;
-import android.graphics.Shader;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +15,7 @@ import android.view.ViewStub;
 import android.view.Window;
 import android.widget.RelativeLayout;
 
+import com.zpj.utils.ColorUtils;
 import com.zpj.utils.ScreenUtils;
 import com.zpj.utils.StatusBarUtils;
 
@@ -78,7 +73,7 @@ public abstract class BaseToolBar extends RelativeLayout implements ViewStub.OnI
         setLayoutParams(params);
 
         if (fillStatusBar) {
-            transparentStatusBar(context);
+            transparentStatusBar();
         }
 
         if (background == null) {
@@ -213,7 +208,7 @@ public abstract class BaseToolBar extends RelativeLayout implements ViewStub.OnI
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        setUpImmersionTitleBar();
+//        setUpImmersionTitleBar();
     }
 
     @Override
@@ -269,11 +264,11 @@ public abstract class BaseToolBar extends RelativeLayout implements ViewStub.OnI
         }
     }
 
-    protected void transparentStatusBar(Context context) {
+    public void transparentStatusBar() {
         boolean transparentStatusBar = StatusBarUtils.supportTransparentStatusBar();
         if (transparentStatusBar) {
-            statusBarHeight = StatusBarUtils.getStatusBarHeight(context);
-            viewStatusBarFill = new View(context);
+            statusBarHeight = StatusBarUtils.getStatusBarHeight(getContext());
+            viewStatusBarFill = new View(getContext());
             viewStatusBarFill.setId(generateViewId());
             viewStatusBarFill.setBackgroundColor(statusBarColor);
             LayoutParams statusBarParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, statusBarHeight);
@@ -301,7 +296,10 @@ public abstract class BaseToolBar extends RelativeLayout implements ViewStub.OnI
         if (context instanceof Activity) {
             activity = (Activity) context;
         } else if (context instanceof ContextWrapper) {
-            activity = (Activity) ((ContextWrapper) context).getBaseContext();
+            context = ((ContextWrapper) context).getBaseContext();
+            if (context instanceof Activity) {
+                activity = (Activity) ((ContextWrapper) context).getBaseContext();
+            }
         }
         if (activity != null) {
             return activity.getWindow();
@@ -443,16 +441,38 @@ public abstract class BaseToolBar extends RelativeLayout implements ViewStub.OnI
     }
 
     public void toggleStatusBarMode() {
+//        Window window = getWindow();
+//        if (window == null) return;
+//        StatusBarUtils.transparentStatusBar(window);
+//        if (statusBarMode == 0) {
+//            statusBarMode = 1;
+//            StatusBarUtils.setLightMode(window);
+//        } else {
+//            statusBarMode = 0;
+//            StatusBarUtils.setDarkMode(window);
+//        }
+
+        if (statusBarMode == 0) {
+            lightStatusBar();
+        } else {
+            darkStatusBar();
+        }
+    }
+
+    public void darkStatusBar() {
         Window window = getWindow();
         if (window == null) return;
         StatusBarUtils.transparentStatusBar(window);
-        if (statusBarMode == 0) {
-            statusBarMode = 1;
-            StatusBarUtils.setLightMode(window);
-        } else {
-            statusBarMode = 0;
-            StatusBarUtils.setDarkMode(window);
-        }
+        statusBarMode = 0;
+        StatusBarUtils.setDarkMode(window);
+    }
+
+    public void lightStatusBar() {
+        Window window = getWindow();
+        if (window == null) return;
+        StatusBarUtils.transparentStatusBar(window);
+        statusBarMode = 1;
+        StatusBarUtils.setLightMode(window);
     }
 
     public boolean isLightStyle() {

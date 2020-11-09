@@ -16,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.zpj.utils.ColorUtils;
 import com.zpj.utils.ScreenUtils;
 import com.zpj.widget.tinted.TintedImageButton;
 
