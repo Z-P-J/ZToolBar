@@ -1,7 +1,6 @@
 package com.zpj.widget.toolbar;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -23,8 +22,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zpj.utils.ScreenUtils;
-import com.zpj.widget.tinted.TintedImageButton;
-import com.zpj.widget.tinted.TintedImageView;
 
 public class ZSearchBar extends BaseToolBar {
 
@@ -47,8 +44,8 @@ public class ZSearchBar extends BaseToolBar {
     protected int rightType;                  // 搜索框右边按钮类型  0: voice 1: delete
 
     private AutoCompleteTextView editor;
-    private TintedImageButton ivClear;
-    private TintedImageButton ibSearch;
+    private ImageButton ivClear;
+    private ImageButton ibSearch;
 
     private OnSearchListener listener;
 
@@ -114,10 +111,10 @@ public class ZSearchBar extends BaseToolBar {
     protected void inflateLeftContainer(ViewStub viewStub) {
         viewStub.setLayoutResource(R.layout.z_toolbar_image_button);
         viewStub.setInflatedId(generateViewId());
-        TintedImageButton button = (TintedImageButton) viewStub.inflate();
+        ImageButton button = (ImageButton) viewStub.inflate();
         if (leftImageResource > 0) {
             button.setImageResource(leftImageResource);
-            button.setTint(isLightStyle ? Color.WHITE : Color.BLACK);
+            button.setColorFilter(isLightStyle ? Color.WHITE : Color.BLACK);
         } else {
             button.setVisibility(GONE);
         }
@@ -157,7 +154,7 @@ public class ZSearchBar extends BaseToolBar {
             ivClear.setImageResource(R.drawable.ic_keyboard_voice_black_24dp);
         }
 //        ivClear.setTint(isLightStyle ? Color.LTGRAY : Color.GRAY);
-        ivClear.setTint(isLightStyle ? Color.WHITE : Color.BLACK);
+        ivClear.setColorFilter(isLightStyle ? Color.WHITE : Color.BLACK);
     }
 
     @Override
@@ -169,7 +166,7 @@ public class ZSearchBar extends BaseToolBar {
         ibSearch = findViewById(R.id.ib_search);
         if (rightImageResource > 0) {
             ibSearch.setImageResource(rightImageResource);
-            ibSearch.setTint(isLightStyle ? Color.WHITE : Color.BLACK);
+            ibSearch.setColorFilter(isLightStyle ? Color.WHITE : Color.BLACK);
         } else {
             ibSearch.setVisibility(GONE);
         }
@@ -330,7 +327,7 @@ public class ZSearchBar extends BaseToolBar {
     }
 
     public void setClearButtonTint(int color) {
-        ivClear.setTint(ColorStateList.valueOf(color));
+        ivClear.setColorFilter(color);
     }
 
     public void setClearButtonImage(int resId) {
@@ -350,18 +347,18 @@ public class ZSearchBar extends BaseToolBar {
     }
 
     public void setLeftButtonTint(int color) {
-        ((TintedImageButton) inflatedLeft).setTint(ColorStateList.valueOf(color));
+        ((ImageButton) inflatedLeft).setColorFilter(color);
     }
     public void setLeftButtonImage(int resId) {
-        ((TintedImageButton) inflatedLeft).setImageResource(resId);
+        ((ImageButton) inflatedLeft).setImageResource(resId);
     }
 
     public void setLeftButtonImage(Drawable drawable) {
-        ((TintedImageButton) inflatedLeft).setImageDrawable(drawable);
+        ((ImageView) inflatedLeft).setImageDrawable(drawable);
     }
 
     public void setLeftButtonImage(Bitmap bitmap) {
-        ((TintedImageButton) inflatedLeft).setImageBitmap(bitmap);
+        ((ImageView) inflatedLeft).setImageBitmap(bitmap);
     }
 
     public ImageButton getRightImageButton() {
@@ -369,7 +366,7 @@ public class ZSearchBar extends BaseToolBar {
     }
 
     public void setRightButtonTint(int color) {
-        ibSearch.setTint(ColorStateList.valueOf(color));
+        ibSearch.setColorFilter(color);
     }
 
     public void setRightButtonImage(int resId) {

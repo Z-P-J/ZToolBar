@@ -12,7 +12,7 @@ import android.view.View;
 
 public class GradientView extends View {
 
-    private Paint paint = new Paint();
+    private final Paint paint = new Paint();
     private LinearGradient backGradient;
 
     private int startColor = Color.GRAY;

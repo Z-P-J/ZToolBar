@@ -1,7 +1,6 @@
 package com.zpj.widget.toolbar;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -13,12 +12,10 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.zpj.utils.ColorUtils;
 import com.zpj.utils.ScreenUtils;
-import com.zpj.widget.tinted.TintedImageButton;
 
 public class ZToolBar extends BaseToolBar {
 
@@ -137,9 +134,9 @@ public class ZToolBar extends BaseToolBar {
         viewStub.setInflatedId(generateViewId());
         if (leftType == TYPE_LEFT_IMAGEBUTTON) {
             viewStub.setLayoutResource(R.layout.z_toolbar_image_button);
-            TintedImageButton button = (TintedImageButton) viewStub.inflate();
+            ImageButton button = (ImageButton) viewStub.inflate();
             button.setImageResource(leftImageResource);
-            button.setTint(ColorStateList.valueOf(isLightStyle ? Color.WHITE : Color.BLACK));
+            button.setColorFilter(isLightStyle ? Color.WHITE : Color.BLACK);
         } else if (leftType == TYPE_LEFT_TEXTVIEW) {
             viewStub.setLayoutResource(R.layout.z_toolbar_text_view);
             TextView textView = (TextView) viewStub.inflate();
@@ -196,9 +193,9 @@ public class ZToolBar extends BaseToolBar {
         viewStub.setInflatedId(generateViewId());
         if (rightType == TYPE_RIGHT_IMAGEBUTTON) {
             viewStub.setLayoutResource(R.layout.z_toolbar_image_button);
-            TintedImageButton button = (TintedImageButton) viewStub.inflate();
+            ImageButton button = (ImageButton) viewStub.inflate();
             button.setImageResource(rightImageResource);
-            button.setTint(ColorStateList.valueOf(isLightStyle ? Color.WHITE : Color.BLACK));
+            button.setColorFilter(isLightStyle ? Color.WHITE : Color.BLACK);
         } else if (rightType == TYPE_RIGHT_TEXTVIEW) {
             viewStub.setLayoutResource(R.layout.z_toolbar_text_view);
             TextView textView = (TextView) viewStub.inflate();
@@ -225,8 +222,8 @@ public class ZToolBar extends BaseToolBar {
     }
 
     private void resetStyle() {
-        if (inflatedLeft instanceof TintedImageButton) {
-            ((TintedImageButton) inflatedLeft).setTint(ColorStateList.valueOf(isLightStyle ? Color.WHITE : Color.BLACK));
+        if (inflatedLeft instanceof ImageButton) {
+            ((ImageButton) inflatedLeft).setColorFilter(isLightStyle ? Color.WHITE : Color.BLACK);
         } else if (inflatedLeft instanceof TextView){
             ((TextView) inflatedLeft).setTextColor(getStyleColor(leftTextColor));
         }
@@ -236,8 +233,8 @@ public class ZToolBar extends BaseToolBar {
         if (tvSubTitle != null) {
             tvSubTitle.setTextColor(getStyleColor(centerSubTextColor));
         }
-        if (inflatedRight instanceof TintedImageButton) {
-            ((TintedImageButton) inflatedRight).setTint(isLightStyle ? Color.WHITE : Color.BLACK);
+        if (inflatedRight instanceof ImageButton) {
+            ((ImageButton) inflatedRight).setColorFilter(isLightStyle ? Color.WHITE : Color.BLACK);
         } else if (inflatedRight instanceof TextView){
             ((TextView) inflatedRight).setTextColor(getStyleColor(rightTextColor));
         }
@@ -312,25 +309,25 @@ public class ZToolBar extends BaseToolBar {
     }
 
     public void setLeftButtonTint(int color) {
-        if (inflatedLeft instanceof TintedImageButton) {
-            ((TintedImageButton) inflatedLeft).setTint(ColorStateList.valueOf(color));
+        if (inflatedLeft instanceof ImageButton) {
+            ((ImageButton) inflatedLeft).setColorFilter(color);
         }
     }
     public void setLeftButtonImage(int resId) {
-        if (inflatedLeft instanceof TintedImageButton) {
-            ((TintedImageButton) inflatedLeft).setImageResource(resId);
+        if (inflatedLeft instanceof ImageButton) {
+            ((ImageButton) inflatedLeft).setImageResource(resId);
         }
     }
 
     public void setLeftButtonImage(Drawable drawable) {
-        if (inflatedLeft instanceof TintedImageButton) {
-            ((TintedImageButton) inflatedLeft).setImageDrawable(drawable);
+        if (inflatedLeft instanceof ImageButton) {
+            ((ImageButton) inflatedLeft).setImageDrawable(drawable);
         }
     }
 
     public void setLeftButtonImage(Bitmap bitmap) {
-        if (inflatedLeft instanceof TintedImageButton) {
-            ((TintedImageButton) inflatedLeft).setImageBitmap(bitmap);
+        if (inflatedLeft instanceof ImageButton) {
+            ((ImageButton) inflatedLeft).setImageBitmap(bitmap);
         }
     }
 
@@ -405,26 +402,26 @@ public class ZToolBar extends BaseToolBar {
     }
 
     public void setRightButtonTint(int color) {
-        if (inflatedRight instanceof TintedImageButton) {
-            ((TintedImageButton) inflatedRight).setTint(ColorStateList.valueOf(color));
+        if (inflatedRight instanceof ImageButton) {
+            ((ImageButton) inflatedRight).setColorFilter(color);
         }
     }
 
     public void setRightButtonImage(int resId) {
-        if (inflatedRight instanceof TintedImageButton) {
-            ((TintedImageButton) inflatedRight).setImageResource(resId);
+        if (inflatedRight instanceof ImageButton) {
+            ((ImageButton) inflatedRight).setImageResource(resId);
         }
     }
 
     public void setRightButtonImage(Drawable drawable) {
-        if (inflatedRight instanceof TintedImageButton) {
-            ((TintedImageButton) inflatedRight).setImageDrawable(drawable);
+        if (inflatedRight instanceof ImageButton) {
+            ((ImageButton) inflatedRight).setImageDrawable(drawable);
         }
     }
 
     public void setRightButtonImage(Bitmap bitmap) {
-        if (inflatedRight instanceof TintedImageButton) {
-            ((TintedImageButton) inflatedRight).setImageBitmap(bitmap);
+        if (inflatedRight instanceof ImageButton) {
+            ((ImageButton) inflatedRight).setImageBitmap(bitmap);
         }
     }
 
